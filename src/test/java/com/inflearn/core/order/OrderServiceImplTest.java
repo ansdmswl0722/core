@@ -1,7 +1,13 @@
 package com.inflearn.core.order;
 
+import com.inflearn.core.discount.FixDiscountPolicy;
+import com.inflearn.core.member.Grade;
+import com.inflearn.core.member.Member;
+import com.inflearn.core.member.MemoryMemberRepository;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 class OrderServiceImplTest {
@@ -12,8 +18,12 @@ class OrderServiceImplTest {
      */
     @Test
     void createOrder() {
-        OrderServiceImpl orderService = new OrderServiceImpl();
-        orderService.createOrder(1L, "itemA", 1000);
+        MemoryMemberRepository memberRepository = new MemoryMemberRepository();
+        memberRepository.save(new Member(1L,"name", Grade.VIP));
+
+        OrderServiceImpl orderService = new OrderServiceImpl(memberRepository,new FixDiscountPolicy());
+        Order order = orderService.createOrder(1L, "itemA", 1000);
+        assertThat(order.getDiscountPrice()).isEqualTo(1000);
     }
 
 }

@@ -11,24 +11,17 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class OrderServiceImpl implements OrderService {
-    private MemberRepository memberRepository;
-    private DiscountPolicy discountPolicy;
 
-    @Autowired
-    public void setMemberRepository(MemberRepository memberRepository) {
+    // 생성자 주입의 장점 : final 키워드를 넣을 수 있다.
+    // 그래서 생성자에서 혹시라도 값이 설정되지 않는 오류를 컴파일 시점에 막아준다.
+    private final MemberRepository memberRepository;
+    private final DiscountPolicy discountPolicy;
+
+
+    public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy discountPolicy) {
         this.memberRepository = memberRepository;
-    }
-
-    @Autowired
-    public void setDiscountPolicy(DiscountPolicy discountPolicy) {
         this.discountPolicy = discountPolicy;
     }
-
-    //    @Autowired
-//    public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy discountPolicy) {
-//        this.memberRepository = memberRepository;
-//        this.discountPolicy = discountPolicy;
-//    }
     @Override
     public Order createOrder(Long memberId, String itemName, int itemPrice) {
         Member targetMember = memberRepository.findById(memberId);
